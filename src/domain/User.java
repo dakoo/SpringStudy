@@ -1,8 +1,5 @@
 package domain;
 
-/**
- * Created by hochulshin on 12/6/16.
- */
 public class User {
     String id;
     String name;
