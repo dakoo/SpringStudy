@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 
 public class UserDao {
 
-    private ConnectionMaker connectionMaker;
+    private final ConnectionMaker connectionMaker;
 
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
