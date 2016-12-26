@@ -14,6 +14,7 @@ public class UserDao {
 
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
+        System.out.println("Constructor of UserDao");
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
