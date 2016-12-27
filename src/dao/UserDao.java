@@ -1,13 +1,13 @@
 package dao;
 
 import domain.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
 
@@ -31,14 +31,16 @@ public class UserDao {
         connection.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
+    public User get(String id) throws SQLException {
         Connection connection = dataSource.getConnection();
 
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM USERS WHERE ID = ?");
         preparedStatement.setString(1, id);
         ResultSet rs = preparedStatement.executeQuery();
-        User user = new User();
-        while (rs.next()) {
+
+        User user = null;
+        if(rs.next()) {
+            user = new User();
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
             user.setPassword(rs.getString("password"));
@@ -46,6 +48,36 @@ public class UserDao {
 
         preparedStatement.close();
         connection.close();
+
+        if(user == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         return user;
+    }
+
+    public void deleteAll() throws SQLException {
+        Connection connection = dataSource.getConnection();
+
+        PreparedStatement prepareStatement = connection.prepareStatement("delete from USERS");
+        prepareStatement.executeUpdate();
+
+        prepareStatement.close();
+        connection.close();
+    }
+
+    public int getCount() throws SQLException {
+        Connection connection = dataSource.getConnection();
+
+        PreparedStatement prepareStatement = connection.prepareStatement("select count(*) from USERS");
+        ResultSet rs = prepareStatement.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        prepareStatement.close();
+        connection.close();
+
+        return count;
     }
 }
